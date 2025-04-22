@@ -20,7 +20,6 @@ exports.addEmployee = async (req, res) => {
       }
 
       const employeeData = new EmployeeRequest(req.body);
-      console.log(employeeData);
 
       employeeData.addresses = addresses;
       // Validating  Employee Data
@@ -104,3 +103,22 @@ exports.getEmployeeById= async(req,res)=>{
     return res.status(500).json({error: error.message});
   }
 }
+
+//used for deactivating the employee
+exports.updateEmployeeStatus = async (req, res) => {
+  try {
+    const empId = req.params.empId;
+    const updatedEmployee = await EmployeeService.updateEmployeeStatus(empId);
+
+    res.status(200).json({
+      message: `Employee status updated to ${updatedEmployee.status}`,
+      employee: updatedEmployee,
+    });
+  } catch (error) {
+    console.error("Error updating employee status:", error.message);
+    res.status(500).json({
+      message: "Failed to update employee status",
+      error: error.message,
+    });
+  }
+};

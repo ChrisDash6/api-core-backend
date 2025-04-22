@@ -1,12 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require("path");
 const newsletterRoute = require("./routes/newsletterRoutes");
 const blogRoute = require("./routes/blog");
 const contactRoute = require("./routes/contact");
 const employeeRoutes = require("./routes/employeeRoutes");
 const departmentRoutes=require("./routes/departmentRoutes")
 const designationRoutes=require("./routes/designationRoutes")
+const onboardingRoutes = require("./routes/onboardingRoutes");
+
 
 const authRoutes = require("./routes/authenticationRoutes");
 const roleRoutes=require("./routes/roleRoutes");
@@ -39,6 +42,7 @@ app.use(
   })
 );
 
+
 // Middleware
 app.use(express.json());
 
@@ -51,6 +55,8 @@ app.use("/api/contact", contactRoute);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use("/api/onboarding", onboardingRoutes);
+
 // Routes
 app.use("/api/auth", authRoutes);
 
@@ -60,6 +66,7 @@ app.use("/api/department",departmentRoutes);
 app.use("/api/role",roleRoutes);
 app.use("/api/designation",designationRoutes);
 app.use("/api/leaves", leavesRoutes);
+
 
 const dbName = "Wouessi";
 

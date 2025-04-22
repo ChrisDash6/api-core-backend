@@ -37,7 +37,7 @@ const createEmployee = async (employeeData, files) => {
 
       //Upload Each File & Store Paths
       for (const file of files) {
-        const filePath = await uploadFile(file, imageFolderPath);
+        const filePath = await uploadFile(file, imageFolderPath,"");
         if (!filePath) throw new Error(`File upload failed for ${file.originalname}`);
         filePaths[file.fieldname] = filePath;
       }
@@ -171,7 +171,7 @@ const updateEmployee = async (empId, updatedData, files) => {
       // Upload & Save Each File
       for (const fieldName in files) {
         const uploadedFile = files[fieldName];
-        await uploadFile(uploadedFile, imageFolderPath);
+        await uploadFile(uploadedFile, imageFolderPath,"");
       }
 
       updateFields.imageFolder = imageFolderPath; 
@@ -227,4 +227,26 @@ const getDesignationTitle = async (designationId) => {
   return designation ? designation.title : null;
 };
 
-module.exports = { getDepartmentName, getDesignationTitle,getEmployeeById,createEmployee,getAllEmployees,updateEmployee};
+
+const updateEmployeeStatus = async (empId) => {
+  try {
+    const employee = await Employee.findOne({ empId });
+
+    if (!employee) {
+      throw new Error("Employee not found");
+    }
+
+    employee.status = employee.status === "active" ? "inactive" : "active";
+
+    await employee.save();
+    return employee;
+  } catch (error) {
+    console.error("Error updating employee status:", error.message);
+    throw new Error(error.message);
+  }
+};
+
+module.exports = { getDepartmentName, getDesignationTitle,getEmployeeById,createEmployee,getAllEmployees,updateEmployee, updateEmployeeStatus};
+
+
+

@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
-require('dotenv').config({ path: '../.env' }); // Adjust the path if .env is in the parent directory
+require('dotenv').config({ path: '../.env' });
 
-// Define the admin email
+
 
 const sendMail = (name, email, phone, subject, message, type) => {
 
