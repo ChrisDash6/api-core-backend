@@ -11,7 +11,7 @@ const verifySession = async (req, res, next) => {
 
     req.user = decoded;
 
-    const sessions = await redisClient.keys(`session:${decoded.empId}:*`);
+    const sessions = await redisClient.keys(`session:${decoded.traineeId}:*`);
     if (sessions.length === 0) {
       return res.status(401).json({ message: "Session Expired. Please login again." });
     }

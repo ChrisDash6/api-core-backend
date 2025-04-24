@@ -1,4 +1,4 @@
-class EmployeeRequest {
+class TraineeRequest {
   constructor(req) {
     this.profileImage = req.file ? req.file.filename : null;
 
@@ -40,7 +40,6 @@ class EmployeeRequest {
     this.practitionerName = req.practitionerName || "";
     this.logId = req.logId;
 
-    // Parse `addresses` field from JSON string (since `multipart/form-data` does not support nested objects)
     try {
       this.addresses = req.addresses ? JSON.parse(req.addresses) : [];
     } catch (error) {
@@ -51,7 +50,7 @@ class EmployeeRequest {
   static validate(requestBody) {
     const errors = [];
 
-    // Validate basic employee details
+    // Validate basic trainee details
     if (!requestBody.firstName || requestBody.firstName.length < 3)
       errors.push("First name must be at least 3 characters.");
     if (!requestBody.lastName || requestBody.lastName.length < 3)
@@ -92,7 +91,7 @@ class EmployeeRequest {
     // Validate address details
     if (!requestBody.addresses || !Array.isArray(requestBody.addresses) || requestBody.addresses.length === 0)
       errors.push("At least one address is required.");
-    
+
     if (requestBody.addresses) {
       requestBody.addresses.forEach((address, index) => {
         if (!address.type || !["temporary", "permanent"].includes(address.type))
@@ -116,4 +115,4 @@ class EmployeeRequest {
   }
 }
 
-module.exports = EmployeeRequest;
+module.exports = TraineeRequest;

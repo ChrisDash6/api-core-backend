@@ -5,7 +5,7 @@ const path = require("path");
 const newsletterRoute = require("./routes/newsletterRoutes");
 const blogRoute = require("./routes/blog");
 const contactRoute = require("./routes/contact");
-const employeeRoutes = require("./routes/employeeRoutes");
+const traineeRoutes = require("./routes/traineeRoutes");
 const departmentRoutes=require("./routes/departmentRoutes")
 const designationRoutes=require("./routes/designationRoutes")
 const onboardingRoutes = require("./routes/onboardingRoutes");
@@ -60,8 +60,8 @@ app.use("/api/onboarding", onboardingRoutes);
 // Routes
 app.use("/api/auth", authRoutes);
 
-// Employee Routes
-app.use("/api/employee", employeeRoutes);
+// Trainee Routes
+app.use("/api/trainee", traineeRoutes);
 app.use("/api/department",departmentRoutes);
 app.use("/api/role",roleRoutes);
 app.use("/api/designation",designationRoutes);

@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 const encoder = require("bcryptjs");
-const { genEmpid, genPass } = require("../helpers/employeeHelper");
+const { gentraineeId, genPass } = require("../helpers/traineeHelper");
 const address = require("./address");
 const roles = require("./roles");
 const department = require("./department");
 const designation = require("./designation");
 
-const EmployeeSchema = mongoose.Schema({
-  empId: {
+const TraineeSchema = mongoose.Schema({
+  traineeId: {
     type: String,
     unique: true,
     trim: true,
@@ -223,4 +223,4 @@ const EmployeeSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Employee", EmployeeSchema,"employees");
+module.exports = mongoose.model("Trainee", TraineeSchema,"trainees");

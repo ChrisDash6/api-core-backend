@@ -1,7 +1,7 @@
 const Leaves = require("../models/leaves");
 
-exports.getAllLeaves = async (empId) => {
-  const leaves = await Leaves.find({ empId: empId });
+exports.getAllLeaves = async (traineeId) => {
+  const leaves = await Leaves.find({ traineeId: traineeId });
   return leaves;
 };
 

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Employee=require('./employee');
+const Trainee=require('./trainee');
 
 
 const DepartmentSchema = new mongoose.Schema({
@@ -31,7 +31,7 @@ const DepartmentSchema = new mongoose.Schema({
   deptHead: {
     type: String,
     required: false,
-    ref: 'Employee', 
+    ref: 'Trainee', 
     trim: true
   },
   status: {

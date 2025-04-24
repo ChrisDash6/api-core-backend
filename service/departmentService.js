@@ -1,5 +1,5 @@
 const Department = require("../models/department");
-const { generateDeptId } = require("../helpers/employeeHelper"); // Helper for department ID generation
+const { generateDeptId } = require("../helpers/traineeHelper"); // Helper for department ID generation
 
 exports.createDepartment = async (departmentData) => {
   try {

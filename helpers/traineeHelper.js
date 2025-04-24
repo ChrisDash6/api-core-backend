@@ -3,32 +3,27 @@ const crypto = require("crypto");
 const Department = require("../models/department");
 const Designation = require("../models/designation");
 
-const getEmployeeModel = () => require("../models/employee");
+const getTraineeModel = () => require("../models/trainee");
 
-
-// generating Unique Employee Id based on max and series
-const generateEmpId = async () => {
-  const Employee=getEmployeeModel();
-  const lastEmployee = await Employee.findOne().sort({ empId: -1 }).exec();
-  if (lastEmployee && lastEmployee.empId) {
-    const lastIdNumber = parseInt(lastEmployee.empId.replace("EMPLOYEE", ""), 10);
-    return `EMPLOYEE${(lastIdNumber + 1).toString().padStart(5, "0")}`;
-  }
-  return "EMPLOYEE00001"; 
+// Generate unique numeric-only Trainee ID 
+const generateTraineeId = async () => {
+  const Trainee = getTraineeModel();
+  const lastTrainee = await Trainee.findOne().sort({ traineeId: -1 }).lean();
+  const lastId = lastTrainee?.traineeId ? parseInt(lastTrainee.traineeId) : 11281;
+  return (lastId + 1).toString();
 };
 
-// Generating Unique Departmentid
+// Generate unique Department ID 
 const generateDeptId = async () => {
   const lastDepartment = await Department.findOne().sort({ departmentId: -1 }).exec();
   if (lastDepartment && lastDepartment.departmentId) {
     const lastIdNumber = parseInt(lastDepartment.departmentId.replace("DEPT", ""), 10);
     return `DEPT${(lastIdNumber + 1).toString().padStart(3, "0")}`;
   }
-  return "DEPT001"; 
+  return "DEPT001";
 };
 
-
-// Generating Unique designation id
+// Generate unique Designation ID 
 const generateDesignationId = async () => {
   const lastDesignation = await Designation.findOne().sort({ designationId: -1 }).exec();
   if (lastDesignation && lastDesignation.designationId) {
@@ -41,31 +36,28 @@ const generateDesignationId = async () => {
   return "DESGN001";
 };
 
-
-// Generate Random Secure Password for first time
+// Generate secure random password
 const generatePassword = (length = 12) => {
-  if (length < 8) {
-    throw new Error("Password length must be at least 8 characters.");
-  }
+  if (length < 8) throw new Error("Password length must be at least 8 characters.");
   return crypto.randomBytes(length).toString("base64").slice(0, length);
 };
 
-// Encrypting the  Password 
+// Hash password
 const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   return await bcrypt.hash(password, salt);
 };
 
-// Compare Encrypted Password
+// Compare hashed password
 const comparePassword = async (password, hash) => {
   return await bcrypt.compare(password, hash);
 };
 
 module.exports = {
-  generateEmpId,
+  generateTraineeId,
   generateDeptId,
+  generateDesignationId,
   generatePassword,
   hashPassword,
   comparePassword,
-  generateDesignationId
 };

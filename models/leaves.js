@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const Employee = require("./employee");
+const Trainee = require("./trainee");
 const leaves = new mongoose.Schema({
-  empId: {
+  traineeId: {
     type: String,
     trim: true,
     required: true,
-    ref: "Employee",
+    ref: "Trainee",
   },
   leaveId: {
     type: String,

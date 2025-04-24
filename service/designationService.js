@@ -1,5 +1,5 @@
 const Designation = require("../models/designation");
-const { generateDesignationId } = require("../helpers/employeeHelper");
+const { generateDesignationId } = require("../helpers/traineeHelper");
 
 exports.createDesignation = async (designationData) => {
     try {
