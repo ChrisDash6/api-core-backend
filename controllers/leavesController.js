@@ -2,8 +2,8 @@ const leavesService = require("../service/leavesService");
 
 exports.saveLeave = async (req, res) => {
   try {
-    const { traineeId } = req.params;
-    const leaveData = { ...req.body, traineeId };
+    const { empId } = req.params;
+    const leaveData = { ...req.body, empId };
     const newLeave = await leavesService.createLeave(leaveData);
     return res.status(201).json(newLeave);
   } catch (error) {
@@ -27,8 +27,8 @@ exports.updateLeave = async (req, res) => {
 
 exports.getAllLeaves = async (req, res) => {
   try {
-    const { traineeId } = req.params;
-    const userLeaves = await leavesService.getAllLeaves(traineeId);
+    const { empId } = req.params;
+    const userLeaves = await leavesService.getAllLeaves(empId);
     return res.status(200).json(userLeaves);
   } catch (error) {
     return res.status(500).json({ error: error.message });

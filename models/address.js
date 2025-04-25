@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
-const Trainee = require("./trainee");
+const Employee = require("./employee");
 
 const AddressSchema = new mongoose.Schema({
-  traineeId: {
+  empId: {
     type: String,
     required: true,
-    ref: "Trainee",
+    ref: "Employee",
   },
   type: {
     type: String,

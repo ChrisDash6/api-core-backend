@@ -29,7 +29,7 @@ const sendMail = (name, email, username, password, subject, message, type) => {
                             <div style="padding: 20px; color: #333333; line-height: 1.6;">
                                 <p>Dear <strong>${name}</strong>,</p>
                                 <p>Congratulations on joining <strong>Wouessi Digital</strong>! We are thrilled to have you onboard.</p>
-                                <p>Your login credentials for the trainee portal are as follows:</p>
+                                <p>Your login credentials for the employee portal are as follows:</p>
                                 <div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">
                                     <p><strong>Username:</strong> ${username}</p>
                                     <p><strong>Password:</strong> ${password}</p>
@@ -78,7 +78,7 @@ const sendMail = (name, email, username, password, subject, message, type) => {
         const mailOptions = {
             from: process.env.SMTP_FROM,
             to: email, 
-            subject: type === "Credentials" ? "Your Trainee Login Credentials" : subject,
+            subject: type === "Credentials" ? "Your Employee Login Credentials" : subject,
             html: htmlContent,
         };
 

@@ -1,49 +1,66 @@
-const bcrypt = require("bcryptjs");
-const redisClient = require("../utils/redisConfig");
-const Trainee = require("../models/trainee.js");
-const { generateAccessToken, createRefreshToken } = require("../utils/jwtUtility"); 
-const { v4: uuidv4 } = require("uuid");
-const useragent = require("useragent");
-const { getDepartmentName, getDesignationTitle } = require("../service/traineeService.js"); 
+const bcrypt = require('bcryptjs');
+const redisClient = require('../utils/redisConfig');
+const Employee = require('../models/employee.js');
+const { generateAccessToken, createRefreshToken } = require('../utils/jwtUtility');
+const { v4: uuidv4 } = require('uuid');
+const useragent = require('useragent');
+const { getDepartmentName, getDesignationTitle } = require('../service/employeeService.js');
 
-const login = async (traineeId, password, req) => {
-  const traineeIdString = String(traineeId).trim();
- 
-  const trainee = await Trainee.findOne({ traineeId: traineeIdString, status: "active" }).populate("roleRef", "roleName").populate("addresses");
-  
-  if (!trainee) throw new Error("No trainee exists with this Trainee ID");
-
-  const isMatch = await bcrypt.compare(password, trainee.password);
-  if (!isMatch) throw new Error("Invalid credentials! Please enter valid credentials");
-
-  //Generating the JWT access token
-  const accessToken = generateAccessToken(traineeId, trainee.role);
-
-  // First time login using create refresh token for session refresh and all state management
-  const { refreshToken, sessionId } = await createRefreshToken(traineeId); 
-
-  const userAgent = useragent.parse(req.headers["user-agent"]);
-
-  const sessionData = {
-    token: refreshToken,
-    ip: req.ip,
-    browser: userAgent.family,
-    os: userAgent.os.family,
-    createdAt: new Date().toISOString()
-  };
-
-  const tempTrainee = trainee.toObject();
-  tempTrainee.departmentName = await getDepartmentName(tempTrainee.departmentId);
-  tempTrainee.designationName = await getDesignationTitle(tempTrainee.designations);
+const login = async (empId, password, req) => {
+  const employeeId = String(empId).trim();
 
   try {
-    await redisClient.hSet(`session:${traineeId}:${sessionId}`, sessionData);
-    await redisClient.expire(`session:${traineeId}:${sessionId}`, 7 * 24 * 60 * 60);
+    const employee = await Employee.findOne({ empId: employeeId, status: 'active' })
+      .populate('roleRef', 'roleName')
+      .populate('addresses');
+
+    if (!employee) throw new Error('No employee exists with this Employee ID');
+
+    const isMatch = await bcrypt.compare(password, employee.password);
+    if (!isMatch) throw new Error('Invalid credentials! Please enter valid credentials');
+
+    const accessToken = generateAccessToken(empId, employee.role);
+    const { refreshToken, sessionId } = await createRefreshToken(empId);
+
+    const userAgent = useragent.parse(req.headers['user-agent'] || '');
+
+    const sessionData = {
+      token: refreshToken,
+      ip: req.ip || 'unknown',
+      browser: userAgent.family || 'unknown',
+      os: userAgent.os.family || 'unknown',
+      createdAt: new Date().toISOString(),
+    };
+
+    const sessionKey = `${process.env.NODE_ENV || 'dev'}:session:${employeeId}:${sessionId}`;
+
+    try {
+      // Directly use hSet and expire commands
+      await redisClient.hSet(sessionKey, sessionData);  // hSet command in the newer Redis client
+      await redisClient.expire(sessionKey, 7 * 24 * 60 * 60); // Expiry in seconds
+    } catch (error) {
+      console.error('Error storing session in Redis:', {
+        error: error.message,
+        stack: error.stack,
+        sessionKey,
+        sessionData,
+      });
+      throw new Error(`Failed to store session in Redis: ${error.message}`);
+    }
+
+    const tempEmployee = employee.toObject();
+    tempEmployee.departmentName = await getDepartmentName(tempEmployee.departmentId);
+    tempEmployee.designationName = await getDesignationTitle(tempEmployee.designations);
+
+    return { accessToken, refreshToken, sessionId, tempEmployee };
   } catch (error) {
-    console.error("Error storing session in Redis:", error);
-    throw new Error("Internal server error during session management");
+    console.error('Login error:', {
+      error: error.message,
+      stack: error.stack,
+      empId: employeeId,
+    });
+    throw error; // Propagate original error
   }
-  return { accessToken, refreshToken, sessionId, tempTrainee }; 
 };
 
 module.exports = { login };

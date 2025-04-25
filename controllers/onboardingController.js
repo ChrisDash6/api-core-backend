@@ -4,7 +4,7 @@ const OnboardingService = require("../service/onboardingService");
 
 exports.submitOnboarding = async (req, res) => {
   try {
-   
+
     upload.any()(req, res, async (err) => {
       if (err) {
         return res.status(400).json({ error: "File upload failed: " + err.message });

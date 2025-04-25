@@ -6,6 +6,7 @@ const newsletterRoute = require("./routes/newsletterRoutes");
 const blogRoute = require("./routes/blog");
 const contactRoute = require("./routes/contact");
 const traineeRoutes = require("./routes/traineeRoutes");
+const employeeRoutes = require("./routes/employeeRoutes");
 const departmentRoutes=require("./routes/departmentRoutes")
 const designationRoutes=require("./routes/designationRoutes")
 const onboardingRoutes = require("./routes/onboardingRoutes");
@@ -61,6 +62,7 @@ app.use("/api/onboarding", onboardingRoutes);
 app.use("/api/auth", authRoutes);
 
 // Trainee Routes
+app.use("/api/employee", employeeRoutes);
 app.use("/api/trainee", traineeRoutes);
 app.use("/api/department",departmentRoutes);
 app.use("/api/role",roleRoutes);
